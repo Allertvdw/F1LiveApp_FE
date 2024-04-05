@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "./authentication/AuthContext";
 
 const RegisterLogin = () => {
   const [email, setEmail] = useState("");
@@ -7,6 +8,7 @@ const RegisterLogin = () => {
   const [register, setRegister] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,10 +25,13 @@ const RegisterLogin = () => {
           body: JSON.stringify({ email, password }),
         }
       );
-
       if (response.ok) {
-        console.log(`${register ? "Registered" : "Logged in"} succesfully.`);
-        navigate("/driverOverview");
+        if (!register) {
+          login();
+          navigate("/driverOverview");
+        } else {
+          console.log("Registered succesfully");
+        }
       } else {
         const data = await response.json();
         setError(data.message || "An error occurred");
@@ -38,7 +43,7 @@ const RegisterLogin = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">

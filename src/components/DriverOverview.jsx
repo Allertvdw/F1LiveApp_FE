@@ -1,14 +1,19 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "./authentication/AuthContext";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function DriverOverview() {
   const [driverCollection, setDriverCollection] = useState([]);
-  const { logout } = useAuth();
+  const { isLoggedIn, logout } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    fetchDrivers();
-  }, []);
+    if (!isLoggedIn) {
+      navigate("/registerLogin");
+    } else {
+      fetchDrivers();
+    }
+  }, [isLoggedIn]);
 
   async function fetchDrivers() {
     const response = await fetch(
