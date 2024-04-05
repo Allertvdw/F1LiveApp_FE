@@ -7,10 +7,12 @@ export const AuthProvider = ({ children }) => {
 
   const login = () => {
     setIsLoggedIn(true);
+    console.log("Succesfully logged in.");
   };
 
   const logout = () => {
     setIsLoggedIn(false);
+    console.log("Succesfully logged out.");
   };
 
   return (

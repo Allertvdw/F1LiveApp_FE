@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "./authentication/AuthContext";
+import { Link } from "react-router-dom";
 
 function DriverOverview() {
   const [driverCollection, setDriverCollection] = useState([]);
@@ -29,7 +30,7 @@ function DriverOverview() {
           onClick={logout}
           className="px-4 py-2 m-2 bg-red-500 hover:bg-red-600 text-white rounded-md shadow-md"
         >
-          Logout
+          <Link to="/registerLogin">Logout</Link>
         </button>
       </div>
 
