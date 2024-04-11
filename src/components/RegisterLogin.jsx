@@ -37,11 +37,15 @@ const RegisterLogin = () => {
         }
       } else {
         const data = await response.json();
-        setError(data.message || "An error occurred");
         if (!register) {
           ToastNotification("error", "Incorrect email/password.");
         } else {
-          ToastNotification("error", "Registration failed.");
+          if (data.errors && Object.keys(data.errors).length > 0) {
+            const errorMessages = Object.values(data.errors).flat();
+            errorMessages.forEach((errorMessage) => {
+              ToastNotification("error", errorMessage);
+            });
+          }
         }
       }
     } catch (error) {
