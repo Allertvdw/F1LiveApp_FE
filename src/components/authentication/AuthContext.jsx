@@ -1,4 +1,5 @@
 import React, { createContext, useState, useContext } from "react";
+import ToastNotification from "../notifications/ToastNotification";
 
 const AuthContext = createContext();
 
@@ -7,11 +8,13 @@ export const AuthProvider = ({ children }) => {
 
   const login = () => {
     setIsLoggedIn(true);
+    ToastNotification("success", "Logged in successfully.");
     console.log("Succesfully logged in.");
   };
 
   const logout = () => {
     setIsLoggedIn(false);
+    ToastNotification("success", "Logged out successfully.");
     console.log("Succesfully logged out.");
   };
 

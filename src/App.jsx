@@ -5,6 +5,7 @@ import Home from "./components/Home";
 import DriverOverview from "./components/DriverOverview";
 import RegisterLogin from "./components/RegisterLogin";
 import { AuthProvider } from "./components/authentication/AuthContext";
+import { ToastContainer } from "react-toastify";
 import "./App.css";
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
           </Routes>
         </BrowserRouter>
       </AuthProvider>
+      <ToastContainer stacked position={"top-center"} />
     </>
   );
 }

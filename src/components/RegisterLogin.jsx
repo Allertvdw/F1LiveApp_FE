@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "./authentication/AuthContext";
+import ToastNotification from "./notifications/ToastNotification";
 
 const RegisterLogin = () => {
   const [email, setEmail] = useState("");
@@ -31,10 +32,17 @@ const RegisterLogin = () => {
           navigate("/driverOverview");
         } else {
           console.log("Registered succesfully");
+          navigate("/registerLogin");
+          ToastNotification("success", "Registered successfully.");
         }
       } else {
         const data = await response.json();
         setError(data.message || "An error occurred");
+        if (!register) {
+          ToastNotification("error", "Incorrect email/password.");
+        } else {
+          ToastNotification("error", "Registration failed.");
+        }
       }
     } catch (error) {
       console.error("Error", error);
