@@ -1,20 +1,14 @@
 import { useState, useEffect } from "react";
-import { useAuth } from "./authentication/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 import ToastNotification from "./notifications/ToastNotification";
 
 function DriverOverview() {
   const [driverCollection, setDriverCollection] = useState([]);
-  const { isLoggedIn, logout } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isLoggedIn) {
-      navigate("/registerLogin");
-    } else {
-      fetchDrivers();
-    }
-  }, [isLoggedIn]);
+    fetchDrivers();
+  });
 
   async function fetchDrivers() {
     const response = await fetch(
@@ -31,14 +25,14 @@ function DriverOverview() {
 
   return (
     <div className="overflow-x-auto">
-      <div className="flex justify-end">
+      {/* <div className="flex justify-end">
         <button
           onClick={logout}
           className="px-4 py-2 m-2 bg-red-500 hover:bg-red-600 text-white rounded-md shadow-md"
         >
-          <Link to="/registerLogin">Logout</Link>
+          <Link to="/login">Logout</Link>
         </button>
-      </div>
+      </div> */}
 
       <table className="table-auto w-full">
         <thead>
