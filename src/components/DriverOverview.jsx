@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ToastNotification from "./notifications/ToastNotification";
+import AuthContext from "./authentication/AuthContext";
 
 function DriverOverview() {
   const [driverCollection, setDriverCollection] = useState([]);

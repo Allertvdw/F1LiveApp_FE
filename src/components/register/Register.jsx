@@ -5,26 +5,29 @@ import ToastNotification from "../notifications/ToastNotification";
 
 function Register() {
   const [email, setEmail] = useState("");
-  //const [username, setUsername] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
   async function handleRegister() {
     try {
-      const response = await fetch("https://localhost:7111/register", {
+      const response = await fetch("https://localhost:7111/api/Auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, /*username, */ password }),
+        body: JSON.stringify({ email, username, password }),
       });
 
       if (!response.ok) {
         console.error("Register failed.");
+        ToastNotification("error", "Registration unsuccessful.");
         navigate("/login");
         return;
       }
 
+      console.log("Registration successful.");
+      ToastNotification("success", "Registration successful.");
       navigate("/login");
     } catch (error) {
       console.error("Error during register:", error);
@@ -64,7 +67,7 @@ function Register() {
                   required=""
                 />
               </div>
-              {/* <div>
+              <div>
                 <label
                   htmlFor="username"
                   className="block mb-2 text-sm font-medium text-gray-900"
@@ -81,7 +84,7 @@ function Register() {
                   placeholder="Username"
                   required=""
                 />
-              </div> */}
+              </div>
               <div>
                 <label
                   htmlFor="password"

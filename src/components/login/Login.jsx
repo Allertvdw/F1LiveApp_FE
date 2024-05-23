@@ -1,36 +1,40 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import ToastNotification from "../notifications/ToastNotification";
 
 function Login() {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  var isAuthenticated = false;
+  //var isAuthenticated = false;
 
   async function handleLogin() {
     try {
-      const response = await fetch("https://localhost:7111/login", {
+      const response = await fetch("https://localhost:7111/api/Auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ username, password }),
       });
 
       if (!response.ok) {
         console.error("Login failed.");
+        ToastNotification("error", "Login unsuccessful.");
         navigate("/login");
         return;
       }
 
       const data = await response.json();
 
-      localStorage.setItem("accessToken", data.accessToken);
-      localStorage.setItem("refreshToken", data.refreshToken);
+      //localStorage.setItem("accessToken", data.accessToken);
+      //localStorage.setItem("refreshToken", data.refreshToken);
 
-      await checkAuthentication();
+      //await checkAuthentication();
 
+      console.log("Login successful.");
+      ToastNotification("success", "Login successful.");
       navigate("/driverOverview");
     } catch (error) {
       console.error("Error during login:", error);
@@ -38,66 +42,66 @@ function Login() {
     }
   }
 
-  async function checkAuthentication() {
-    const token = localStorage.getItem("accessToken");
+  // async function checkAuthentication() {
+  //   const token = localStorage.getItem("accessToken");
 
-    if (!token) {
-      console.error("Access token not found");
-      isAuthenticated = false;
-      return;
-    }
+  //   if (!token) {
+  //     console.error("Access token not found");
+  //     isAuthenticated = false;
+  //     return;
+  //   }
 
-    try {
-      const response = await fetch("https://localhost:7111/api/user/info", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+  //   try {
+  //     const response = await fetch("https://localhost:7111/api/user/info", {
+  //       method: "GET",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     });
 
-      if (response.status === 401) {
-        isAuthenticated = false;
-        return;
-      }
-      return true;
-    } catch (error) {
-      console.error("Error during login:", error);
-      isAuthenticated = false;
-      return;
-    }
-  }
+  //     if (response.status === 401) {
+  //       isAuthenticated = false;
+  //       return;
+  //     }
+  //     return true;
+  //   } catch (error) {
+  //     console.error("Error during login:", error);
+  //     isAuthenticated = false;
+  //     return;
+  //   }
+  // }
 
-  async function refreshToken() {
-    const refreshToken = localStorage.getItem("refreshToken");
+  // async function refreshToken() {
+  //   const refreshToken = localStorage.getItem("refreshToken");
 
-    if (!refreshToken) {
-      console.error("Refresh token not found");
-      return;
-    }
+  //   if (!refreshToken) {
+  //     console.error("Refresh token not found");
+  //     return;
+  //   }
 
-    try {
-      const response = await fetch("https://localhost:7111/refresh", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ refreshToken }),
-      });
+  //   try {
+  //     const response = await fetch("https://localhost:7111/refresh", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({ refreshToken }),
+  //     });
 
-      if (!response.ok) {
-        console.error("Failed to refresh access token");
-        isAuthenticated = false;
-        return;
-      }
+  //     if (!response.ok) {
+  //       console.error("Failed to refresh access token");
+  //       isAuthenticated = false;
+  //       return;
+  //     }
 
-      const data = await response.json();
-      localStorage.setItem("accessToken", data.accessToken);
-    } catch (error) {
-      console.error("Failed to refresh access token", error);
-      isAuthenticated = false;
-    }
-  }
+  //     const data = await response.json();
+  //     localStorage.setItem("accessToken", data.accessToken);
+  //   } catch (error) {
+  //     console.error("Failed to refresh access token", error);
+  //     isAuthenticated = false;
+  //   }
+  // }
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -115,19 +119,19 @@ function Login() {
             <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
               <div>
                 <label
-                  htmlFor="email"
+                  htmlFor="username"
                   className="block mb-2 text-sm font-medium text-gray-900"
                 >
-                  Email
+                  Username
                 </label>
                 <input
-                  type="email"
-                  name="email"
-                  id="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  type="username"
+                  name="username"
+                  id="username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                   className="bg-gray-50 border border-gray-900 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                  placeholder="Email"
+                  placeholder="Username"
                   required=""
                 />
               </div>
