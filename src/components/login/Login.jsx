@@ -23,67 +23,6 @@ function Login() {
     }
   }
 
-  // async function checkAuthentication() {
-  //   const token = localStorage.getItem("accessToken");
-
-  //   if (!token) {
-  //     console.error("Access token not found");
-  //     isAuthenticated = false;
-  //     return;
-  //   }
-
-  //   try {
-  //     const response = await fetch("https://localhost:7111/api/user/info", {
-  //       method: "GET",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //     });
-
-  //     if (response.status === 401) {
-  //       isAuthenticated = false;
-  //       return;
-  //     }
-  //     return true;
-  //   } catch (error) {
-  //     console.error("Error during login:", error);
-  //     isAuthenticated = false;
-  //     return;
-  //   }
-  // }
-
-  // async function refreshToken() {
-  //   const refreshToken = localStorage.getItem("refreshToken");
-
-  //   if (!refreshToken) {
-  //     console.error("Refresh token not found");
-  //     return;
-  //   }
-
-  //   try {
-  //     const response = await fetch("https://localhost:7111/refresh", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({ refreshToken }),
-  //     });
-
-  //     if (!response.ok) {
-  //       console.error("Failed to refresh access token");
-  //       isAuthenticated = false;
-  //       return;
-  //     }
-
-  //     const data = await response.json();
-  //     localStorage.setItem("accessToken", data.accessToken);
-  //   } catch (error) {
-  //     console.error("Failed to refresh access token", error);
-  //     isAuthenticated = false;
-  //   }
-  // }
-
   async function handleSubmit(event) {
     event.preventDefault();
     await handleLogin().then((r) => r);
