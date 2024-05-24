@@ -7,7 +7,6 @@ function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  //var isAuthenticated = false;
 
   async function handleLogin() {
     try {
@@ -28,10 +27,14 @@ function Login() {
 
       const data = await response.json();
 
-      //localStorage.setItem("accessToken", data.accessToken);
-      //localStorage.setItem("refreshToken", data.refreshToken);
-
-      //await checkAuthentication();
+      localStorage.setItem(
+        "auth",
+        JSON.stringify({
+          accessToken: data.accessToken,
+          refreshToken: data.refreshToken,
+          expiresIn: data.expiresIn,
+        })
+      );
 
       console.log("Login successful.");
       ToastNotification("success", "Login successful.");

@@ -1,5 +1,6 @@
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
+import ToastNotification from "../notifications/ToastNotification";
 
 function AuthContext() {
   const navigate = useNavigate();
@@ -14,11 +15,15 @@ function AuthContext() {
     });
 
     if (!response.ok) {
-      console.error("Register failed.");
-      ToastNotification("error", "Registration unsuccessful.");
+      console.error("Registration failed.");
+      ToastNotification("error", "Registration failed.");
       navigate("/login");
       return;
     }
+
+    console.log("Registration successful.");
+    ToastNotification("success", "Registration successful.");
+    //navigate("/login");
   }
 
   async function Login(username, password) {
@@ -32,16 +37,32 @@ function AuthContext() {
 
     if (!response.ok) {
       console.error("Login failed.");
-      ToastNotification("error", "Login unsuccessful.");
+      ToastNotification("error", "Login failed.");
       navigate("/login");
       return;
     }
 
     await response.json();
+
+    localStorage.setItem(
+      "auth",
+      JSON.stringify({
+        accessToken: data.accessToken,
+        refreshToken: data.refreshToken,
+        expiresIn: data.expiresIn,
+      })
+    );
+
+    console.log("Login successful.");
+    ToastNotification("success", "Login successful.");
+    //navigate("/driverOverview");
   }
 
   async function Logout() {
-    Cookies.remove("refreshToken");
-    navigate("/login");
+    localStorage.removeItem("refreshToken");
+    console.log("Logout successful.");
+    //navigate("/login");
   }
 }
+
+export default AuthContext;
