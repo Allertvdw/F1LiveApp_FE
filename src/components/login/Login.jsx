@@ -13,7 +13,6 @@ function Login() {
   async function handleLogin() {
     try {
       await Login(username, password);
-      console.log("Login successful.");
       ToastNotification("success", "Login successful.");
       navigate("/driverOverview");
     } catch (error) {

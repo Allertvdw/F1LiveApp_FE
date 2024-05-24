@@ -1,11 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import ToastNotification from "../notifications/ToastNotification";
-import { createContext, useContext } from "react";
+import { createContext, useContext, useState } from "react";
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   async function Register(email, username, password) {
     const response = await fetch("https://localhost:7111/api/Auth/register", {
@@ -16,15 +17,9 @@ export function AuthProvider({ children }) {
       body: JSON.stringify({ email, username, password }),
     });
 
-    if (!response.ok) {
-      console.error("Registration failed.");
-      ToastNotification("error", "Registration failed.");
-      navigate("/login");
-      return;
+    if (response.status === 200) {
+      console.log("Registration successful.");
     }
-
-    console.log("Registration successful.");
-    ToastNotification("success", "Registration successful.");
   }
 
   async function Login(username, password) {
@@ -36,32 +31,32 @@ export function AuthProvider({ children }) {
       body: JSON.stringify({ username, password }),
     });
 
-    if (!response.ok) {
-      console.error("Login failed.");
-      ToastNotification("error", "Login failed.");
-      navigate("/login");
-      return;
-    }
-
     const data = await response.json();
 
-    localStorage.setItem(
-      "auth",
-      JSON.stringify({
-        accessToken: data.accessToken,
-        refreshToken: data.refreshToken,
-        expiresIn: data.expiresIn,
-      })
-    );
+    if (response.status === 200) {
+      localStorage.setItem(
+        "auth",
+        JSON.stringify({
+          accessToken: data.accessToken,
+          refreshToken: data.refreshToken,
+          expiresIn: data.expiresIn,
+        })
+      );
+
+      setIsLoggedIn(true);
+      console.log("Login successful.");
+    }
   }
 
   async function Logout() {
     localStorage.removeItem("auth");
+
+    setIsLoggedIn(false);
     console.log("Logout successful.");
   }
 
   return (
-    <AuthContext.Provider value={{ Register, Login, Logout }}>
+    <AuthContext.Provider value={{ Register, Login, Logout, isLoggedIn }}>
       {children}
     </AuthContext.Provider>
   );

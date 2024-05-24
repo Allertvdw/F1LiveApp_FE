@@ -4,7 +4,7 @@ import ToastNotification from "./notifications/ToastNotification";
 import { useAuth } from "./authentication/AuthContext";
 
 function DriverOverview() {
-  const { Logout } = useAuth();
+  const { Logout, isLoggedIn } = useAuth();
   const [driverCollection, setDriverCollection] = useState([]);
   const navigate = useNavigate();
 
@@ -28,14 +28,22 @@ function DriverOverview() {
   return (
     <div className="overflow-x-auto">
       <div className="flex justify-end">
-        <button
-          onClick={Logout}
-          className="px-4 py-2 m-2 bg-red-500 hover:bg-red-600 text-white rounded-md shadow-md"
-        >
-          <Link to="/login">Logout</Link>
-        </button>
+        {isLoggedIn ? (
+          <button
+            onClick={Logout}
+            className="px-4 py-2 m-2 bg-red-500 hover:bg-red-600 text-white rounded-md shadow-md"
+          >
+            <Link to="/login">Logout</Link>
+          </button>
+        ) : (
+          <button
+            onClick={() => navigate("/login")}
+            className="px-4 py-2 m-2 bg-blue-600 hover:bg-blue-600 text-white rounded-md shadow-md"
+          >
+            <Link to="/login">Login</Link>
+          </button>
+        )}
       </div>
-
       <table className="table-auto w-full">
         <thead>
           <tr>

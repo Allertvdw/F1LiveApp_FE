@@ -14,9 +14,8 @@ function Register() {
   async function handleRegister() {
     try {
       await Register(email, username, password);
-      console.log("Registration successful.");
       ToastNotification("success", "Registration successful.");
-      navigate("/register");
+      navigate("/login");
     } catch (error) {
       console.error("Error during registration:", error);
       ToastNotification("error", "Error during registration.");
