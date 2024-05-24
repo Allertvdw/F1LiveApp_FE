@@ -1,8 +1,10 @@
-import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import ToastNotification from "../notifications/ToastNotification";
+import { createContext, useContext } from "react";
 
-function AuthContext() {
+const AuthContext = createContext();
+
+export function AuthProvider({ children }) {
   const navigate = useNavigate();
 
   async function Register(email, username, password) {
@@ -23,7 +25,6 @@ function AuthContext() {
 
     console.log("Registration successful.");
     ToastNotification("success", "Registration successful.");
-    //navigate("/login");
   }
 
   async function Login(username, password) {
@@ -42,7 +43,7 @@ function AuthContext() {
       return;
     }
 
-    await response.json();
+    const data = await response.json();
 
     localStorage.setItem(
       "auth",
@@ -52,17 +53,20 @@ function AuthContext() {
         expiresIn: data.expiresIn,
       })
     );
-
-    console.log("Login successful.");
-    ToastNotification("success", "Login successful.");
-    //navigate("/driverOverview");
   }
 
   async function Logout() {
-    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("auth");
     console.log("Logout successful.");
-    //navigate("/login");
   }
+
+  return (
+    <AuthContext.Provider value={{ Register, Login, Logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
-export default AuthContext;
+export function useAuth() {
+  return useContext(AuthContext);
+}

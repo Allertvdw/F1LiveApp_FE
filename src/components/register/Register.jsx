@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import ToastNotification from "../notifications/ToastNotification";
+import { useAuth } from "../authentication/AuthContext";
 
 function Register() {
+  const { Register } = useAuth();
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -11,27 +13,14 @@ function Register() {
 
   async function handleRegister() {
     try {
-      const response = await fetch("https://localhost:7111/api/Auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, username, password }),
-      });
-
-      if (!response.ok) {
-        console.error("Register failed.");
-        ToastNotification("error", "Registration unsuccessful.");
-        navigate("/login");
-        return;
-      }
-
+      await Register(email, username, password);
       console.log("Registration successful.");
       ToastNotification("success", "Registration successful.");
-      navigate("/login");
+      navigate("/register");
     } catch (error) {
-      console.error("Error during register:", error);
-      navigate("/login");
+      console.error("Error during registration:", error);
+      ToastNotification("error", "Error during registration.");
+      navigate("/register");
     }
   }
 

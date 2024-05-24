@@ -2,45 +2,23 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import ToastNotification from "../notifications/ToastNotification";
+import { useAuth } from "../authentication/AuthContext";
 
 function Login() {
+  const { Login } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
   async function handleLogin() {
     try {
-      const response = await fetch("https://localhost:7111/api/Auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, password }),
-      });
-
-      if (!response.ok) {
-        console.error("Login failed.");
-        ToastNotification("error", "Login unsuccessful.");
-        navigate("/login");
-        return;
-      }
-
-      const data = await response.json();
-
-      localStorage.setItem(
-        "auth",
-        JSON.stringify({
-          accessToken: data.accessToken,
-          refreshToken: data.refreshToken,
-          expiresIn: data.expiresIn,
-        })
-      );
-
+      await Login(username, password);
       console.log("Login successful.");
       ToastNotification("success", "Login successful.");
       navigate("/driverOverview");
     } catch (error) {
       console.error("Error during login:", error);
+      ToastNotification("error", "Error during login.");
       navigate("/login");
     }
   }

@@ -1,6 +1,7 @@
 import React from "react";
 import { createRoot } from "react-dom";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./components/authentication/AuthContext";
 import Home from "./components/Home";
 import Login from "./components/login/Login";
 import Register from "./components/register/Register";
@@ -13,13 +14,15 @@ function App() {
   return (
     <>
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/driverOverview" element={<DriverOverview />} />
-          <Route path="/chat" element={<Chat />} />
-        </Routes>
+        <AuthProvider>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/driverOverview" element={<DriverOverview />} />
+            <Route path="/chat" element={<Chat />} />
+          </Routes>
+        </AuthProvider>
       </BrowserRouter>
       <ToastContainer stacked position={"top-center"} />
     </>
