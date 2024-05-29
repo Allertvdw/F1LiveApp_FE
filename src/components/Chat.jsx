@@ -14,8 +14,8 @@ const Chat = () => {
 
     setConnection(newConnection);
 
-    newConnection.on("ReceiveMessage", (user, message) => {
-      setMessages((messages) => [...messages, `${user}: ${message}`]);
+    newConnection.on("ReceiveMessage", (user, message, sentAt) => {
+      setMessages((messages) => [...messages, { user, message, sentAt }]);
     });
 
     newConnection
@@ -68,10 +68,11 @@ const Chat = () => {
           </button>
         </div>
         <hr />
-        <ul className="list-disc pl-5 space-y-1">
+        <ul className="list-disc text-left pl-5 space-y-1">
           {messages.map((msg, index) => (
             <li key={index} className="text-gray-700">
-              {msg}
+              <span className="text-gray-400 text-sm">{msg.sentAt} </span>
+              {msg.user}: {msg.message}
             </li>
           ))}
         </ul>
