@@ -1,94 +1,83 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import * as signalR from "@microsoft/signalr";
 
-function Chat() {
+const Chat = () => {
   const [connection, setConnection] = useState(null);
-  const [userInput, setUserInput] = useState("");
-  const [messageInput, setMessageInput] = useState("");
+  const [user, setUser] = useState("");
+  const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
     const newConnection = new signalR.HubConnectionBuilder()
       .withUrl("https://localhost:7111/chatHub")
-      .configureLogging(signalR.LogLevel.Information)
       .build();
 
+    setConnection(newConnection);
+
     newConnection.on("ReceiveMessage", (user, message) => {
-      console.log("messageReceived");
-      setMessages((prevMessages) => [...prevMessages, `${user}: ${message}`]);
+      setMessages((messages) => [...messages, `${user}: ${message}`]);
     });
 
     newConnection
       .start()
       .then(() => {
-        setConnection(newConnection);
+        console.log("Connection established");
       })
-      .catch((error) => console.error(error));
+      .catch((err) => console.error(err.toString()));
   }, []);
 
-  function closeSignalRConnection() {
+  const sendMessage = async () => {
     if (connection) {
-      connection.stop();
+      try {
+        await connection.invoke("SendMessage", user, message);
+        setMessage("");
+      } catch (err) {
+        console.error(err.toString());
+      }
     }
-  }
-
-  function sendMessage(event) {
-    console.log("sendMessage");
-    event.preventDefault();
-    if (connection && userInput && messageInput) {
-      connection
-        .invoke("SendMessage", userInput, messageInput)
-        .then(() => setMessageInput(""))
-        .catch((error) => console.error());
-    }
-  }
+  };
 
   return (
-    <div className="container">
-      <div className="row p-1">
-        <div className="col-1">User</div>
-        <div className="col-5">
+    <div className="container mx-auto p-4">
+      <div className="flex flex-col space-y-2">
+        <div className="flex items-center space-x-2">
+          <label className="w-20">User</label>
           <input
             type="text"
-            value={userInput}
-            onChange={(e) => setUserInput(e.target.value)}
+            value={user}
+            onChange={(e) => setUser(e.target.value)}
+            className="flex-1 border rounded p-2"
           />
         </div>
-      </div>
-      <div className="row p-1">
-        <div className="col-1">Message</div>
-        <div className="col-5">
+        <div className="flex items-center space-x-2">
+          <label className="w-20">Message</label>
           <input
             type="text"
-            className="w-100"
-            value={messageInput}
-            onChange={(e) => setMessageInput(e.target.value)}
+            className="flex-1 border rounded p-2"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
           />
         </div>
-      </div>
-      <div className="row p-1">
-        <div className="col-6 text-end">
-          <button onClick={sendMessage} disabled={!connection}>
+        <div className="flex justify-end">
+          <button
+            className="px-4 py-2 bg-blue-500 text-white rounded"
+            onClick={sendMessage}
+            disabled={!connection}
+          >
             Send Message
           </button>
         </div>
-      </div>
-      <div className="row p-1">
-        <div className="col-6">
-          <hr />
-        </div>
-      </div>
-      <div className="row p-1">
-        <div className="col-6">
-          <ul id="messagesList">
-            {messages.map((msg, index) => (
-              <li key={index}>{msg}</li>
-            ))}
-          </ul>
-        </div>
+        <hr />
+        <ul className="list-disc pl-5 space-y-1">
+          {messages.map((msg, index) => (
+            <li key={index} className="text-gray-700">
+              {msg}
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );
-}
+};
 
 export default Chat;
