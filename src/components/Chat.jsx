@@ -15,7 +15,14 @@ const Chat = () => {
     setConnection(newConnection);
 
     newConnection.on("ReceiveMessage", (user, message, sentAt) => {
-      setMessages((messages) => [...messages, { user, message, sentAt }]);
+      const formattedTime = new Date(sentAt).toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+      setMessages((messages) => [
+        ...messages,
+        { user, message, sentAt: formattedTime },
+      ]);
     });
 
     newConnection
