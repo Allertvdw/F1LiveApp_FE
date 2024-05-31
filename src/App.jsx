@@ -9,6 +9,7 @@ import DriverOverview from "./components/DriverOverview";
 import { ToastContainer } from "react-toastify";
 import "./App.css";
 import Chat from "./components/Chat";
+import PrivateRoute from "./components/authentication/PrivateRoute";
 
 function App() {
   return (
@@ -20,7 +21,14 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/driverOverview" element={<DriverOverview />} />
-            <Route path="/chat" element={<Chat />} />
+            <Route
+              path="/chat"
+              element={
+                <PrivateRoute>
+                  <Chat />
+                </PrivateRoute>
+              }
+            />
           </Routes>
         </AuthProvider>
       </BrowserRouter>
