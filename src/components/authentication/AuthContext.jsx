@@ -10,12 +10,11 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     function checkLoginStatus() {
-      const authData = localStorage.getItem("auth");
-      if (authData) {
-        const { accessToken } = JSON.parse(authData);
+      const token = localStorage.getItem("token");
+      if (token) {
         try {
-          const decodedToken = jwtDecode(accessToken);
-          if (decodedToken.expiresIn * 1000 > Date.now()) {
+          const decodedToken = jwtDecode(token);
+          if (decodedToken.exp * 1000 > Date.now()) {
             setIsLoggedIn(true);
           } else {
             setIsLoggedIn(false);
@@ -54,26 +53,17 @@ export function AuthProvider({ children }) {
       body: JSON.stringify({ username, password }),
     });
 
-    const data = await response.json();
+    const token = await response.text();
 
     if (response.status === 200) {
-      localStorage.setItem(
-        "auth",
-        JSON.stringify({
-          accessToken: data.accessToken,
-          refreshToken: data.refreshToken,
-          expiresIn: data.expiresIn,
-        })
-      );
-
+      localStorage.setItem("token", token);
       setIsLoggedIn(true);
       console.log("Login successful.");
     }
   }
 
   async function Logout() {
-    localStorage.removeItem("auth");
-
+    localStorage.removeItem("token");
     setIsLoggedIn(false);
     console.log("Logout successful.");
   }
